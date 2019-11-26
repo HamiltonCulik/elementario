@@ -1,6 +1,6 @@
-# Elementarium
-Elementarium é um aplicativo web de anotações especializado cujo foco principal é dar a liberdade de expressar o relacionamento entre cada uma de suas anotações de forma 
-livre mas deliberada. Em essência, Elementarium dá as ferramentas para que você estruture suas anotações em grafos conectados, permitindo que você construa um mapa 
+# Elementar.io
+Elementar.io é um aplicativo web de anotações especializado cujo foco principal é dar a liberdade de expressar o relacionamento entre cada uma de suas anotações de forma 
+livre mas deliberada. Em essência, Elementar.io dá as ferramentas para que você estruture suas anotações em grafos conectados, permitindo que você construa um mapa 
 intuitivo para suas informações da forma que quiser para, além de anotar aquilo que lhe for importante, possa analisar exatamente como anotações de diversos tipos 
 podem se conectar.
 

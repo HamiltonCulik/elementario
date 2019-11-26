@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class= "jumbotron">
+	<h1>{{mainMap}}</h1>
+	<p>List of all connections</p>
+	
+	<div style="display:flex">
+		<div style="width:50%;">
+			<p>Lower neighbours</p>
+			<ul>
+				{% for conexao in conexoesA %}
+				<li>{{conexao[0].node_name}} {{conexao[1]}}</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div style="width:50%;">
+			<p>Higher neighbours</p>
+			<ul>
+				{% for conexao in conexoesB %}
+				<li>{{conexao[0].node_name}} {{conexao[1]}}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	
+</div>
+{% endblock %}
