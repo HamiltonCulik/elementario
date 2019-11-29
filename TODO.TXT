@@ -1,0 +1,21 @@
+TO-DO LIST
+
+Write error protection on node_view.py and print debugging
+
+Write all relevant requests on notes-api.service.ts
+
+Create relevant components : 
+    ng g c showMaps
+    ng g c viewMap
+    ng g c newMap/Topic/Sticker
+    ng g c updateMap/Topic/Sticker
+
+create SVG for all node types
+
+program view.js (ds script that updates the graph network onto a svg square inside viewMaps)
+
+connect view.js function calls into components, and then allow it to update itself in real time with
+database requests
+
+
+Use iframes and jquery for basic animation

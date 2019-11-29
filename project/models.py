@@ -26,6 +26,16 @@ class Node(db.Model):
 
     def lower_neighbors(self):
         return [x.lower_node for x in self.higher_edges]
+    
+    def as_dict(self):
+        return {
+            "node_id":self.node_id,
+            "node_links":[x.node_id for x in self.lower_neighbors()],
+            "node_type":self.node_type,
+            "nome_name":self.node_name,
+            "node_position_x":self.node_position_x,
+            "node_position_y":self.node_position_y
+        }
 
 
 class Edge(db.Model):
@@ -61,6 +71,24 @@ class TopicNode(Node):
     @declared_attr
     def content(cls):
         return Node.__table__.c.get('content', db.Column(db.Text))
+    
+    def __init__(self, name, content,  x=None, y=None, parent_id=None):
+        self.parent_id = parent_id
+        self.node_name = name
+        self.node_position_x = x
+        self.node_position_y = y
+        self.content = content
+
+    def as_dict(self):
+        return {
+            "node_id":self.node_id,
+            "node_links":[x.node_id for x in self.lower_neighbors()],
+            "node_type":self.node_type,
+            "content":self.content,
+            "nome_name":self.node_name,
+            "node_position_x":self.node_position_x,
+            "node_position_y":self.node_position_y
+        }
 
 class StickerNode(Node):
     __mapper_args__ = {'polymorphic_identity': 'sticker'}
@@ -75,5 +103,16 @@ class StickerNode(Node):
         self.node_position_x = x
         self.node_position_y = y
         self.content = content
+
+    def as_dict(self):
+        return {
+            "node_id":self.node_id,
+            "node_links":[x.node_id for x in self.lower_neighbors()],
+            "node_type":self.node_type,
+            "content":self.content,
+            "nome_name":self.node_name,
+            "node_position_x":self.node_position_x,
+            "node_position_y":self.node_position_y
+        }
 
 
