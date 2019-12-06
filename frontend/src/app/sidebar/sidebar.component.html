@@ -1,0 +1,28 @@
+
+<div class="jumbotron jumbotron-fluid" id="sidebar">
+    <button id = "button-positioning" class="btn btn-light" (click) = "closeSidebar();">&times;</button>
+
+    <div *ngIf="selectedMap">
+        <app-edit-map
+            [node] = "selectedNode"
+            [nodeList] = "nodeList"
+            (posted)="onPost($event)">
+        </app-edit-map>
+    </div>
+
+    <div *ngIf="selectedTopic">
+        <app-edit-topic
+            [node] = "selectedNode"
+            [nodeList] = "nodeList"
+            (posted)="onPost($event)">
+        </app-edit-topic>
+    </div>
+    
+    <div *ngIf="selectedSticker">
+        <app-edit-sticker
+            [node] = "selectedNode"
+            [nodeList] = "nodeList"
+            (posted)="onPost($event)">
+        </app-edit-sticker>
+    </div>
+</div>

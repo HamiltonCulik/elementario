@@ -1,0 +1,21 @@
+<div *ngIf="mapList">    
+    <div class="card text-center">
+        <div class="card-body">
+            <h4 class="card-title">Elementar.io</h4>
+        </div>
+        <div class="card-body">
+                <label>Novo mapa:
+                    <input #map_name placeholder="nome"/>
+                </label>
+                <button (click)="addMap(map_name.value); map_name.value=''">
+                    add
+                </button>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" *ngFor="let map of mapList"
+                routerLink = "/map/{{map.node_id}}">
+                    {{map.node_id}} | {{map.node_name}}
+                </li>
+            </ul>
+        </div>
+</div>

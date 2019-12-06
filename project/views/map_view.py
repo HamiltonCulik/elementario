@@ -1,6 +1,7 @@
-from flask import Blueprint,jsonify
+from flask import Blueprint,jsonify,request
+from flask_cors import cross_origin
 from project import db
-from project.models import MapNode, Node
+from project.models import MapNode, Node, Edge
 from sys import stderr
 
 
@@ -8,37 +9,52 @@ map_blueprint = Blueprint('map',
                               __name__,
                               template_folder='')
 
-@map_blueprint.route("/", methods = ["GET"])
+@map_blueprint.route("/", methods = ["GET", "POST"])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def starterMaps():
-    parentlessMaps = Node.query.filter_by(node_parent = None).all()
+    if(request.method == "GET"):
+        parentlessMaps = Node.query.filter_by(parent_id = None).all()
+        result = [x.as_dict() for x in parentlessMaps]
+        return jsonify(result)
 
-    result = [x.as_dict for x in parentlessMaps]
+    elif(request.method == "POST"):
+        data = request.get_json()
+        newMap = MapNode(data["node_name"], data["node_position_x"], data["node_position_y"], data["parent_id"])
+        db.session.add_all([newMap])
+        db.session.commit()
+        return "200"
 
-    return jsonify(result)
 
-@map_blueprint.route('/<id>', methods = ["GET", "POST", "PUT"])
+
+@map_blueprint.route('/<id>', methods = ["GET", "PUT"])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def Map(id):
     if(request.method == "GET"):#Gets an entire map as its view, that is, all its children and their connections
-        mapResult = Node.query.filter_by(node_id = id).all()[0]
-        children = [x.as_dict for x in mapResult.children_nodes()]
+        mapResult = Node.query.get(id)
+        children = [x.as_dict() for x in mapResult.children_nodes()]
         return jsonify(children)
-    
-    elif(request.method == "POST"):
-        if(Node.query.get(node_id = id).all()[0]):
-            print("Attempted to create a new Map with id {} when it already exists".format(id), file=stderr)
-        else:
-            data = request.form
-            newMap = MapNode(data.name, data.x, data.y, data.parent)
-            db.session.add_all([newMap])
-            db.commit()
-    
+
     elif(request.method == "PUT"):
-        currentMap = Node.query.get(node_id = id).all()[0]
+        currentMap = Node.query.get(id)
         if(not currentMap):
-            print("Attempted to update Map with id {} when it doesn't exist".format(id), file=stderr)
-        else:
-            data = request.form
-            currentMap.node_name = data.name
-            currentMap.node_position_x = data.x
-            currentMap.node_position_y = data.y
-            db.commit()
+            print("Error, attempted to update map with id {} when it doesn't exist yet".format(id), stderr)
+            return "404"
+        data = request.get_json()
+        currentMap.node_name = data["node_name"]
+        currentMap.node_position_x = data["node_position_x"]
+        currentMap.node_position_y = data["node_position_y"]
+
+        oldLinks = [x.node_id for x in currentMap.higher_neighbors()]
+        newLinks = data["node_links"]
+        for node_id in oldLinks:
+            if(node_id not in newLinks): #delete all edges not found in new list
+                toDelete = Edge.query.filter_by(lower_id= currentMap.node_id,higher_id=node_id).all()[0]
+                db.session.delete(toDelete)
+
+        for node_id in newLinks: #add all new edges
+            if(node_id not in oldLinks and node_id != currentMap.node_id):
+                nextNode = Node.query.get(node_id)
+                Edge(currentMap, nextNode)
+    
+        db.session.commit()
+        return "200"

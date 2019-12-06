@@ -1,0 +1,38 @@
+<app-sidebar
+[nodeList] = "loadedMap"
+(closed)="onClose($event)">
+</app-sidebar>
+<div class="card text-center">
+    <div class="card-body">
+        <button class="position-absolute" style="right: 0;" routerLink = "/">Retornar ao menu principal</button>
+        <h4 *ngIf="currentMap" class="card-title">{{currentMap.node_name}}</h4>
+        <p *ngIf="parentMap" class="card-text" (click)="changeMapTo(parentMap)">{{parentMap.node_name}}</p>
+    </div>
+</div>
+
+
+<div class="container jumbotron">
+    <div class="row">
+        <div class="col-sm">
+            <button (click)="newMap()">Novo mapa</button>
+            <button (click)="newTopic()">Novo topico</button>
+            <button (click)="newSticker()">Novo sticker</button>
+        </div>
+        <div class = "col-sm">
+            <ul>
+                <li *ngFor= "let node of loadedMap">
+                    <button (click) = "delete(node)">Clique para deletar id:{{node.node_id}}</button>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm">
+            <ul>
+                <li *ngFor="let node of loadedMap"
+                (click)="selectNode(node)"
+                ><span>[{{node.node_type}}](id:{{node.node_id}}){{node.node_name}}</span> Liga para : {{node.node_links}}
+            </li>
+        </ul>
+    </div>
+</div>
+
+</div>

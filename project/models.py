@@ -30,11 +30,12 @@ class Node(db.Model):
     def as_dict(self):
         return {
             "node_id":self.node_id,
-            "node_links":[x.node_id for x in self.lower_neighbors()],
+            "node_links":[x.node_id for x in self.higher_neighbors()],
             "node_type":self.node_type,
-            "nome_name":self.node_name,
+            "node_name":self.node_name,
             "node_position_x":self.node_position_x,
-            "node_position_y":self.node_position_y
+            "node_position_y":self.node_position_y,
+            "parent_id":self.parent_id
         }
 
 
@@ -42,16 +43,16 @@ class Edge(db.Model):
     __tablename__ = "edge"
     __table_args__ = {'extend_existing': True}
 
-    lower_id = db.Column(db.Integer, db.ForeignKey("node.node_id"), primary_key=True)
+    lower_id = db.Column(db.Integer, db.ForeignKey("node.node_id", ondelete = "CASCADE"), primary_key=True)
 
-    higher_id = db.Column(db.Integer, db.ForeignKey("node.node_id"), primary_key=True)
+    higher_id = db.Column(db.Integer, db.ForeignKey("node.node_id", ondelete = "CASCADE"), primary_key=True)
 
     lower_node = db.relationship(
-        Node, primaryjoin=lower_id == Node.node_id, backref="lower_edges"
+        Node, primaryjoin=lower_id == Node.node_id, backref=db.backref("lower_edges", cascade="save-update, merge, delete, delete-orphan")
     )
 
     higher_node = db.relationship(
-        Node, primaryjoin=higher_id == Node.node_id, backref="higher_edges"
+        Node, primaryjoin=higher_id == Node.node_id, backref=db.backref("higher_edges",cascade="save-update, merge, delete, delete-orphan")
     )
 
     def __init__(self, n1, n2):
@@ -82,12 +83,13 @@ class TopicNode(Node):
     def as_dict(self):
         return {
             "node_id":self.node_id,
-            "node_links":[x.node_id for x in self.lower_neighbors()],
+            "node_links":[x.node_id for x in self.higher_neighbors()],
             "node_type":self.node_type,
             "content":self.content,
-            "nome_name":self.node_name,
+            "node_name":self.node_name,
             "node_position_x":self.node_position_x,
-            "node_position_y":self.node_position_y
+            "node_position_y":self.node_position_y,
+            "parent_id":self.parent_id
         }
 
 class StickerNode(Node):
@@ -107,12 +109,13 @@ class StickerNode(Node):
     def as_dict(self):
         return {
             "node_id":self.node_id,
-            "node_links":[x.node_id for x in self.lower_neighbors()],
+            "node_links":[x.node_id for x in self.higher_neighbors()],
             "node_type":self.node_type,
             "content":self.content,
-            "nome_name":self.node_name,
+            "node_name":self.node_name,
             "node_position_x":self.node_position_x,
-            "node_position_y":self.node_position_y
+            "node_position_y":self.node_position_y,
+            "parent_id":self.parent_id
         }
 
 
